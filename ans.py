@@ -56,7 +56,8 @@ def setPlayerScore(ingredientCount):
     for p in people:
         #((number of ingredients/#of liked ingredients)-number of disliked ingredients)/number of ingrendients
         #people[p]["score"]=((ingredientCount/len(people[p]["likes"]))-len(people[p]["dislikes"]))/ingredientCount
-        people[p]["score"]=round(((len(people[p]["likes"])+len(people[p]["dislikes"]))/(ingredientCount-1)-0.5),3)
+        #people[p]["score"]=round(((len(people[p]["likes"])+len(people[p]["dislikes"]))/(ingredientCount-1)-0.5),3)
+        people[p]["score"]=((ingredientCount-(len(people[p]["likes"])+len(people[p]["dislikes"])))/(ingredientCount-1))-0.5
 def setIngredientScore(releventIngredients):
     for i in releventIngredients:
         for p in people:
@@ -67,7 +68,10 @@ def setIngredientScore(releventIngredients):
                 else:
                     ingredients[i]=ingredientScore
     sorted_ingredients = sorted(ingredients.items(), key=lambda x: x[1],reverse=True)
-    print(sorted_ingredients)      
+    rankedIngredients =[]
+    for i in sorted_ingredients:
+        rankedIngredients.append(i[0])
+    print(rankedIngredients)      
         
 if __name__ == "__main__":
     main()
