@@ -21,27 +21,41 @@ def main():
     with open('hash-code-practice/test-cases/a_an_example.in.txt') as f:
         lines = f.readlines()
 
-    playerNumber=1
-    likes = []
-    dislikes=[]
+    lineNumber=1
+    allLikes = []
+    allDislikes=[]
     for i in range(int(lines[0])):
-
-        line = lines[playerNumber].split(" ")
+        temp = {}
+        likes=[]
+        dislikes=[]
+        line = lines[lineNumber].split(" ")
+       
         for j in range(1,len(line)):
             #adding the likes and removing the \n on the final value
             likes.append(line[j] if j==line[-1] else line[j].rstrip("\n"))
-
-        playerNumber+=1
-        line =lines[playerNumber].split(" ")
+        allLikes+=likes
+        temp["likes"]=likes 
+        lineNumber+=1
+        line =lines[lineNumber].split(" ")
         for j in range(1,len(line)):
-            #adding the dislikes and removing the \n on the final valueF
+            #adding the dislikes and removing the \n on the final value
             dislikes.append(line[j] if j==line[-1] else line[j].rstrip("\n"))
+        allDislikes+=dislikes
+        temp["dislikes"]=dislikes
+        lineNumber+=1
+        people[i]=temp
 
-        playerNumber+=1
-    print(Counter(likes),Counter(dislikes))
-    releventIngredients= list(set(likes+dislikes))
+    print(Counter(allLikes),Counter(allDislikes))
+    releventIngredients= list(set(allLikes+allDislikes))
     print(releventIngredients)
-
+    ingredientCount = len(releventIngredients)
+    setPlayerScore(ingredientCount)
+    print(people)
+def setPlayerScore(ingredientCount):
+    for p in people:
+        #((number of ingredients/#of liked ingredients)-number of disliked ingredients)/number of ingrendients
+        #people[p]["score"]=((ingredientCount/len(people[p]["likes"]))-len(people[p]["dislikes"]))/ingredientCount
+        people[p]["score"]=(len(people[p]["likes"])+len(people[p]["dislikes"]))/(ingredientCount-1)
 
 if __name__ == "__main__":
     main()
