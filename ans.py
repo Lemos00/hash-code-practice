@@ -18,7 +18,7 @@ people = {}
 # 2 mushrooms tomatoes
 def main():
     global people, ingredients
-    with open('test-cases/a_an_example.in.txt') as f:
+    with open('hash-code-practice/test-cases/a_an_example.in.txt') as f:
         lines = f.readlines()
 
     playerNumber=1
