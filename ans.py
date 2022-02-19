@@ -45,17 +45,30 @@ def main():
         lineNumber+=1
         people[i]=temp
 
-    print(Counter(allLikes),Counter(allDislikes))
+    #print(Counter(allLikes),Counter(allDislikes))
     releventIngredients= list(set(allLikes+allDislikes))
-    print(releventIngredients)
+    #print(releventIngredients)
     ingredientCount = len(releventIngredients)
     setPlayerScore(ingredientCount)
-    print(people)
+    #print(people)
+    setIngredientScore(releventIngredients)
 def setPlayerScore(ingredientCount):
     for p in people:
         #((number of ingredients/#of liked ingredients)-number of disliked ingredients)/number of ingrendients
         #people[p]["score"]=((ingredientCount/len(people[p]["likes"]))-len(people[p]["dislikes"]))/ingredientCount
-        people[p]["score"]=(len(people[p]["likes"])+len(people[p]["dislikes"]))/(ingredientCount-1)
-
+        people[p]["score"]=round(((len(people[p]["likes"])+len(people[p]["dislikes"]))/(ingredientCount-1)-0.5),3)
+def setIngredientScore(releventIngredients):
+    for i in releventIngredients:
+        for p in people:
+            if i in people[p]["likes"] or i in people[p]["dislikes"]:
+                ingredientScore = people[p]["score"]*(1/len(releventIngredients))
+                if i in ingredients:
+                    ingredients[i]+=ingredientScore
+                else:
+                    ingredients[i]=ingredientScore
+    sorted_ingredients = sorted(ingredients.items(), key=lambda x: x[1],reverse=True)
+    print(sorted_ingredients)      
+        
 if __name__ == "__main__":
     main()
+#ingridented +=(player score)*(1/ingCount)
