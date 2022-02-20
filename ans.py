@@ -18,7 +18,7 @@ people = {}
 # 2 mushrooms tomatoes
 def main():
     global people, ingredients
-    with open('hash-code-practice/test-cases/a_an_example.in.txt') as f:
+    with open('test-cases/a_an_example.in.txt') as f:
         lines = f.readlines()
 
     lineNumber=1
@@ -61,13 +61,25 @@ def setPlayerScore(ingredientCount):
 def setIngredientScore(releventIngredients):
     for i in releventIngredients:
         for p in people:
-            if i in people[p]["likes"] or i in people[p]["dislikes"]:
+            #problem if it is good for basil to be in one pizza and good for basil not to be in a pizza, it still boosts the score 
+            #add if it is only not wanted in one pizza it still increases the score
+            #maybe subtract reset the player score to 0-1 and make it on like positive and on dislike negative or something like that
+            if i in people[p]["likes"]:
                 ingredientScore = people[p]["score"]*(1/len(releventIngredients))
                 if i in ingredients:
                     ingredients[i]+=ingredientScore
                 else:
                     ingredients[i]=ingredientScore
+
+            if i in people[p]["dislikes"]:
+                ingredientScore = (people[p]["score"])*(1/len(releventIngredients))
+                if i in ingredients:
+                    ingredients[i]+=ingredientScore
+                else:
+                    ingredients[i]=ingredientScore
+            
     sorted_ingredients = sorted(ingredients.items(), key=lambda x: x[1],reverse=True)
+    print(sorted_ingredients)
     rankedIngredients =[]
     for i in sorted_ingredients:
         rankedIngredients.append(i[0])
