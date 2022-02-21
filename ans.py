@@ -12,6 +12,9 @@
 #   score ingredients
 #   score ppl
 # 4 cheese tomato pineapple pepper
+
+#issues: - ranking system doesnt really work
+#        - too slow, wont run the d and e files
 from collections import Counter
 ingredients = {}
 people = {}
@@ -51,40 +54,63 @@ def main():
     ingredientCount = len(releventIngredients)
     setPlayerScore(ingredientCount)
     #print(people)
-    setIngredientScore(releventIngredients)
+    arr =setIngredientScore(releventIngredients,allLikes,allDislikes)
+    findBestPizza(arr)
 def setPlayerScore(ingredientCount):
     for p in people:
-        #((number of ingredients/#of liked ingredients)-number of disliked ingredients)/number of ingrendients
-        #people[p]["score"]=((ingredientCount/len(people[p]["likes"]))-len(people[p]["dislikes"]))/ingredientCount
-        #people[p]["score"]=round(((len(people[p]["likes"])+len(people[p]["dislikes"]))/(ingredientCount-1)-0.5),3)
+
         people[p]["score"]=((ingredientCount-(len(people[p]["likes"])+len(people[p]["dislikes"])))/(ingredientCount-1))-0.5
-def setIngredientScore(releventIngredients):
+def setIngredientScore(releventIngredients,allLikes,allDislikes):
+    contradictionScore=0
     for i in releventIngredients:
+        l = Counter(allLikes)[i]
+        d = Counter(allDislikes)[i]
+        length = l+d
+        contradictionScore=(l-d)/length+1
         for p in people:
-            #problem if it is good for basil to be in one pizza and good for basil not to be in a pizza, it still boosts the score 
-            #add if it is only not wanted in one pizza it still increases the score
-            #maybe subtract reset the player score to 0-1 and make it on like positive and on dislike negative or something like that
             if i in people[p]["likes"]:
-                ingredientScore = people[p]["score"]*(1/len(releventIngredients))
+                ingredientScore = people[p]["score"]*(1/len(releventIngredients))*contradictionScore
                 if i in ingredients:
                     ingredients[i]+=ingredientScore
                 else:
                     ingredients[i]=ingredientScore
 
             if i in people[p]["dislikes"]:
-                ingredientScore = (people[p]["score"])*(1/len(releventIngredients))
+                ingredientScore = (people[p]["score"])*(1/len(releventIngredients))*contradictionScore
                 if i in ingredients:
                     ingredients[i]+=ingredientScore
                 else:
                     ingredients[i]=ingredientScore
-            
-    sorted_ingredients = sorted(ingredients.items(), key=lambda x: x[1],reverse=True)
-    print(sorted_ingredients)
+      
+
+    sortedIngredients = sorted(ingredients.items(), key=lambda x: x[1],reverse=True)
     rankedIngredients =[]
-    for i in sorted_ingredients:
+    for i in sortedIngredients:
         rankedIngredients.append(i[0])
-    print(rankedIngredients)      
-        
+    return rankedIngredients
+
+def findBestPizza(sortedIngredients):
+    bestPizza = []
+    maxNumberOfCustomers=0
+    for i in range(len(sortedIngredients)):
+        testIngredients = []
+        for j in range(len(sortedIngredients)-i):
+            testIngredients.append(sortedIngredients[j])
+            testValue = testPizza(testIngredients)
+        if testValue >=maxNumberOfCustomers:
+            bestPizza = testIngredients
+            maxNumberOfCustomers= testValue 
+    print(bestPizza)
+
+def testPizza(testIngredients):
+    numberOfCustomers=0
+    for p in people:
+    
+        likeCondition = (sorted(testIngredients)==sorted(list(set.union(set(testIngredients),set(people[p]["likes"])))))
+        dislikeCondition =(not bool(set.intersection(set(testIngredients),set(people[p]["dislikes"]))))
+        if likeCondition and dislikeCondition:
+            numberOfCustomers+=1
+    return numberOfCustomers
 if __name__ == "__main__":
     main()
-#ingridented +=(player score)*(1/ingCount)
+
